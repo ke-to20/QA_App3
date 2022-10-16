@@ -3,9 +3,11 @@ package jp.techacademy.keito.nagata.qa_app
 import android.content.Intent
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
@@ -56,8 +58,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
-            val question = Question(title, body, name, uid, dataSnapshot.key ?: "",
-                mGenre, bytes, answerArrayList)
+            val question = Question(
+                title, body, name, uid, dataSnapshot.key ?: "",
+                mGenre, bytes, answerArrayList
+            )
             mQuestionArrayList.add(question)
             mAdapter.notifyDataSetChanged()
         }
@@ -106,13 +110,30 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         // idがtoolbarがインポート宣言により取得されているので
         // id名でActionBarのサポートを依頼
+        Log.d("QA_App", "MainActivity onCreate")
+
+        val user = FirebaseAuth.getInstance().currentUser
+        Log.d("QA_App", "MainActivity onCreate user = " + user.toString())
+
+        if (user == null) {
+//            ログインされていない場合はお気に入りを非表示に
+            onPrepareOptionsMenu()
+        }
+
+
+
         setSupportActionBar(toolbar)
+
 
         // fabにClickリスナーを登録
         fab.setOnClickListener { view ->
             // ジャンルを選択していない場合（mGenre == 0）はエラーを表示するだけ
             if (mGenre == 0) {
-                Snackbar.make(view, getString(R.string.question_no_select_genre), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    view,
+                    getString(R.string.question_no_select_genre),
+                    Snackbar.LENGTH_LONG
+                ).show()
             } else {
 
             }
@@ -128,11 +149,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(applicationContext, QuestionSendActivity::class.java)
                 intent.putExtra("genre", mGenre)
                 startActivity(intent)
+
+
             }
         }
 
         // ナビゲーションドロワーの設定
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.app_name, R.string.app_name)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawer_layout,
+            toolbar,
+            R.string.app_name,
+            R.string.app_name
+        )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -146,17 +175,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mQuestionArrayList = ArrayList<Question>()
         mAdapter.notifyDataSetChanged()
 
-        listView.setOnItemClickListener{parent, view, position, id ->
+        listView.setOnItemClickListener { parent, view, position, id ->
             // Questionのインスタンスを渡して質問詳細画面を起動する
             val intent = Intent(applicationContext, QuestionDetailActivity::class.java)
             intent.putExtra("question", mQuestionArrayList[position])
             startActivity(intent)
         }
     }
+
     override fun onResume() {
         super.onResume()
         // 1:趣味を既定の選択とする
-        if(mGenre == 0) {
+        if (mGenre == 0) {
             onNavigationItemSelected(nav_view.menu.getItem(0))
         }
     }
@@ -182,6 +212,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+
+        Log.d("QA_App", "MainActivity  onNavigationItemSelected id = " + id.toString())
 
         if (id == R.id.nav_hobby) {
             toolbar.title = getString(R.string.menu_hobby_label)
@@ -215,5 +247,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
         // --- ここまで追加する ---
     }
+
+
+//    メニューの非表示
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        // メニューアイテムを取得
+
+        menu.findItem(R.id.nav_favorite).setVisible(false)
+
+//        if (flag === 0) {
+//            // menu0を表示
+//            menu.findItem(R.id.item0).setVisible(true)
+//            // menu1を非表示
+//            menu.findItem(R.id.item1).setVisible(false)
+//        } else if (flag === 1) {
+//            // menu0を非表示
+//            menu.findItem(R.id.item0).setVisible(false)
+//            // menu1を表示
+//            menu.findItem(R.id.item1).setVisible(true)
+//        }
+        return true
+    }
+
 
 }
