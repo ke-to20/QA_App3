@@ -117,7 +117,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (user == null) {
 //            ログインされていない場合はお気に入りを非表示に
-            onPrepareOptionsMenu()
+
+            var item: MenuItem = menu.findItem(R.id.nav_favorite)
+            item.setVisible(false);
+//            ====================================
+
+            menu.findItem(R.id.nav_favorite).setVisible(false)
+
+//            =====================================
+            menu.R.id.nav_favorite.setVisible(false)
+
+//            =====================================
+            R.id.nav_favorite.setVisible(false)
+
         }
 
 
