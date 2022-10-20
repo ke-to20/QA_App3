@@ -1,26 +1,26 @@
 package jp.techacademy.keito.nagata.qa_app
+// findViewById()を呼び出さずに該当Viewを取得するために必要となるインポート宣言
 
+import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-// findViewById()を呼び出さずに該当Viewを取得するために必要となるインポート宣言
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var mGenre = 0
 
     // --- ここから ---
@@ -102,6 +102,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         override fun onCancelled(p0: DatabaseError) {
 
         }
+
+
     }
     // --- ここまで追加する ---
 
@@ -111,26 +113,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // idがtoolbarがインポート宣言により取得されているので
         // id名でActionBarのサポートを依頼
         Log.d("QA_App", "MainActivity onCreate")
-
-        val user = FirebaseAuth.getInstance().currentUser
-        Log.d("QA_App", "MainActivity onCreate user = " + user.toString())
-
-        if (user == null) {
-//            ログインされていない場合はお気に入りを非表示に
-
-            var item: MenuItem = menu.findItem(R.id.nav_favorite)
-            item.setVisible(false);
-//            ====================================
-
-            menu.findItem(R.id.nav_favorite).setVisible(false)
-
-//            =====================================
-            menu.R.id.nav_favorite.setVisible(false)
-
-//            =====================================
-            R.id.nav_favorite.setVisible(false)
-
-        }
 
 
 
@@ -201,6 +183,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (mGenre == 0) {
             onNavigationItemSelected(nav_view.menu.getItem(0))
         }
+
+        val user = FirebaseAuth.getInstance().currentUser
+        Log.d("QA_App", "MainActivity onCreate user = " + user.toString())
+
+
+        if (user == null) {
+//            ログインされていない場合はお気に入りを非表示に
+
+
+            //非表示にしたい時に以下をする
+            //非表示にしたい時に以下をする
+            val menu: Menu = nav_view.getMenu()
+            val menuItem1 = menu.findItem(R.id.nav_favorite)
+            menuItem1.isVisible = false
+        }
+
     }
     // --- ここまで追加する ---
 
