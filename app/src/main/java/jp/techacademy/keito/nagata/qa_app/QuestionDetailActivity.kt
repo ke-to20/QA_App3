@@ -90,7 +90,8 @@ class QuestionDetailActivity : AppCompatActivity() {
         }
 
         val dataBaseReference = FirebaseDatabase.getInstance().reference
-        mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
+        mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString())
+            .child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
     }
 
@@ -98,9 +99,10 @@ class QuestionDetailActivity : AppCompatActivity() {
         super.onResume()
 
         val user = FirebaseAuth.getInstance().currentUser
-        Log.d("QA_App", "QuestionDetailActivity onResume user = " + user.toString())
+       Log.d("QA_App", "QuestionDetailActivity onResume user = " + user.toString())
 
-        val imageView = findViewById<ImageView>(R.id.imageView)
+        val imageView = findViewById<ImageView>(R.id.favoriteImageView)
+        Log.d("QA_App", "QuestionDetailActivity imageView = " + imageView.toString())
 
         if (user == null) {
 //            ログインされていない場合はお気に入りを非表示に
@@ -110,7 +112,7 @@ class QuestionDetailActivity : AppCompatActivity() {
 
             imageView.visibility = View.INVISIBLE
 
-        }else{
+        } else {
 
             imageView.visibility = View.VISIBLE
         }

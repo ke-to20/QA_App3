@@ -231,6 +231,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val id = item.itemId
 
         Log.d("QA_App", "MainActivity  onNavigationItemSelected id = " + id.toString())
+        Log.d("QA_App", "MainActivity  onNavigationItemSelected　画面遷移")
 
         if (id == R.id.nav_hobby) {
             toolbar.title = getString(R.string.menu_hobby_label)
@@ -244,7 +245,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (id == R.id.nav_compter) {
             toolbar.title = getString(R.string.menu_compter_label)
             mGenre = 4
+        }else if (id == R.id.nav_favorite) {
+            toolbar.title = getString(R.string.menu_favorite_label)
+            mGenre = 5
         }
+
+        Log.d("QA_App", "MainActivity  onNavigationItemSelected　mGenre = " + mGenre)
+
 
         drawer_layout.closeDrawer(GravityCompat.START)
 
