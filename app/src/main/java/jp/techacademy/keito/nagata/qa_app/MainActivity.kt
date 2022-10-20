@@ -1,20 +1,20 @@
 package jp.techacademy.keito.nagata.qa_app
 // findViewById()を呼び出さずに該当Viewを取得するために必要となるインポート宣言
 
-import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+// findViewById()を呼び出さずに該当Viewを取得するために必要となるインポート宣言
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -197,6 +197,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val menu: Menu = nav_view.getMenu()
             val menuItem1 = menu.findItem(R.id.nav_favorite)
             menuItem1.isVisible = false
+        }else{
+
+            //非表示にしたい時に以下をする
+            //非表示にしたい時に以下をする
+            val menu: Menu = nav_view.getMenu()
+            val menuItem1 = menu.findItem(R.id.nav_favorite)
+            menuItem1.isVisible = true
         }
 
     }
@@ -258,28 +265,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // --- ここまで追加する ---
     }
 
-
-//    メニューの非表示
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        super.onPrepareOptionsMenu(menu)
-        // メニューアイテムを取得
-
-        menu.findItem(R.id.nav_favorite).setVisible(false)
-
-//        if (flag === 0) {
-//            // menu0を表示
-//            menu.findItem(R.id.item0).setVisible(true)
-//            // menu1を非表示
-//            menu.findItem(R.id.item1).setVisible(false)
-//        } else if (flag === 1) {
-//            // menu0を非表示
-//            menu.findItem(R.id.item0).setVisible(false)
-//            // menu1を表示
-//            menu.findItem(R.id.item1).setVisible(true)
-//        }
-        return true
-    }
 
 
 }

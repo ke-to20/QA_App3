@@ -1,12 +1,15 @@
 package jp.techacademy.keito.nagata.qa_app
 
-
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_question_detail.*
+
 
 class QuestionDetailActivity : AppCompatActivity() {
 
@@ -89,5 +92,27 @@ class QuestionDetailActivity : AppCompatActivity() {
         val dataBaseReference = FirebaseDatabase.getInstance().reference
         mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString()).child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val user = FirebaseAuth.getInstance().currentUser
+        Log.d("QA_App", "QuestionDetailActivity onResume user = " + user.toString())
+
+        val imageView = findViewById<ImageView>(R.id.imageView)
+
+        if (user == null) {
+//            ログインされていない場合はお気に入りを非表示に
+
+            Log.d("QA_App", "QuestionDetailActivity onResume if 内")
+            //非表示にしたい時に以下をする
+
+            imageView.visibility = View.INVISIBLE
+
+        }else{
+
+            imageView.visibility = View.VISIBLE
+        }
     }
 }
