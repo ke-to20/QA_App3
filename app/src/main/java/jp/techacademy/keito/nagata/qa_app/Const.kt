@@ -13,5 +13,10 @@ const val AnswersPATH = "answers"
 const val NameKEY = "name"
 
 
+//お気に入り用
+const val FavoritesPATH = "favorites"
+
+//お気に入り内のジャンル用
+const val GanrePATH = "genre"
 
 

@@ -216,6 +216,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        Log.d("QA_App", "MainActivity onOptionsItemSelected item = " + item.toString())
         val id = item.itemId
 
         if (id == R.id.action_settings) {
@@ -248,6 +250,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }else if (id == R.id.nav_favorite) {
             toolbar.title = getString(R.string.menu_favorite_label)
             mGenre = 5
+//            別のアクティビティへ飛ばす
+//            お気に入り専用を作成
         }
 
         Log.d("QA_App", "MainActivity  onNavigationItemSelected　mGenre = " + mGenre)

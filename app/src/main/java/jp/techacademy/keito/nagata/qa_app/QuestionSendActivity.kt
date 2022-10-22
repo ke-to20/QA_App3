@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.preference.PreferenceManager
@@ -39,6 +40,10 @@ class QuestionSendActivity : AppCompatActivity(), View.OnClickListener, Database
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_send)
+
+        Log.d("QA_App", "QuestionSendActivity OnCreate" )
+
+        Log.d("QA_App" , "intent = " + intent)
 
         // 渡ってきたジャンルの番号を保持する
         val extras = intent.extras
@@ -162,6 +167,8 @@ class QuestionSendActivity : AppCompatActivity(), View.OnClickListener, Database
 
             genreRef.push().setValue(data, this)
             progressBar.visibility = View.VISIBLE
+
+            Log.d("QA_App", "QuestionSendActivity data" + data)
         }
     }
 
@@ -206,6 +213,8 @@ class QuestionSendActivity : AppCompatActivity(), View.OnClickListener, Database
 
     override fun onComplete(databaseError: DatabaseError?, databaseReference: DatabaseReference) {
         progressBar.visibility = View.GONE
+
+        Log.d("QA_App" , "QuestionSendActivity onComplete")
 
         if (databaseError == null) {
             finish()

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_question_detail.*
@@ -24,9 +25,11 @@ class QuestionDetailActivity : AppCompatActivity() {
             val answerUid = dataSnapshot.key ?: ""
 
             for (answer in mQuestion.answers) {
+                Log.d("QA_App", "answer = "  + answer.toString())
                 // 同じAnswerUidのものが存在しているときは何もしない
                 if (answerUid == answer.answerUid) {
                     return
+                    Log.d("QA_App", "return" )
                 }
             }
 
@@ -59,10 +62,12 @@ class QuestionDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_detail)
-
         // 渡ってきたQuestionのオブジェクトを保持する
         val extras = intent.extras
+
+
         mQuestion = extras!!.get("question") as Question
+        Log.d("QA_App", "mQuestion = " + mQuestion.toString())
 
         title = mQuestion.title
 
@@ -72,6 +77,8 @@ class QuestionDetailActivity : AppCompatActivity() {
         mAdapter.notifyDataSetChanged()
 
         fab.setOnClickListener {
+            Log.d("QA_App", "QustionDetailActivity onCreate fav クリックされた")
+
             // ログイン済みのユーザーを取得する
             val user = FirebaseAuth.getInstance().currentUser
 
@@ -93,6 +100,36 @@ class QuestionDetailActivity : AppCompatActivity() {
         mAnswerRef = dataBaseReference.child(ContentsPATH).child(mQuestion.genre.toString())
             .child(mQuestion.questionUid).child(AnswersPATH)
         mAnswerRef.addChildEventListener(mEventListener)
+
+
+//        UID
+        var uid = FirebaseAuth.getInstance().currentUser!!.uid
+
+        favoriteImageView.setOnClickListener {
+            Log.d("QA_App", "QustionDetailActivity onCreate favoriteImageView クリックされた")
+            Log.d("QA_App", "QustionDetailActivity onCreate genre = " + mQuestion.genre.toString())
+
+            Log.d("QA_App", "QustionDetailActivity onCreate uid = " + uid.toString())
+
+            var mGenre = mQuestion.genre
+
+            val dataBaseReference = FirebaseDatabase.getInstance().reference
+            val genreRef = dataBaseReference.child(UsersPATH).child(mQuestion.uid).child(GanrePATH).child(mGenre.toString()).child(mQuestion.questionUid)
+
+            val data = HashMap<String, String>()
+
+            Log.d("QA_App",   "generef = "+ genreRef.toString())
+            Log.d("QA_App",   "data = "+ data.toString())
+
+            var ansPath = mQuestion.questionUid
+
+            data["favorites"] =  ansPath
+
+            genreRef.setValue(data)
+
+
+        }
+
     }
 
     override fun onResume() {
@@ -116,5 +153,7 @@ class QuestionDetailActivity : AppCompatActivity() {
 
             imageView.visibility = View.VISIBLE
         }
+
+
     }
 }
