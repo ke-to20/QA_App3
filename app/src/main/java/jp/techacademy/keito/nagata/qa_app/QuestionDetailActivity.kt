@@ -187,12 +187,23 @@ class QuestionDetailActivity : AppCompatActivity() {
             }else{
 //                お気に入り登録解除
                 Log.d("QA_App", "お気に入りから削除")
+
+
+//                val collection = database.collection("CollectionName")
+//                val document = collection.document(task.id)
+
+                var mGenre = mQuestion.genre
+
+                val dataBaseReference = FirebaseDatabase.getInstance().reference
+                val document = dataBaseReference.child(UsersPATH).child(mQuestion.uid).child(GanrePATH)
+                    .child(mGenre.toString()).child(mQuestion.questionUid)
+
+                document.delete().await()
+
+
+
                 favoriteImageView.setImageResource(R.drawable.ic_star_border)
-
-
-
                 isFavorite = false
-
 
             }
 
