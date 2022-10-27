@@ -252,6 +252,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mGenre = 5
 //            別のアクティビティへ飛ばす
 //            お気に入り専用を作成
+
+            val intent = Intent(applicationContext, FavoritesList::class.java)
+            startActivity(intent)
+
         }
 
         Log.d("QA_App", "MainActivity  onNavigationItemSelected　mGenre = " + mGenre)

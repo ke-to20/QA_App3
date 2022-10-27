@@ -160,8 +160,6 @@ class QuestionDetailActivity : AppCompatActivity() {
             if (isFavorite == false) {
 //                お気に入り登録
                 Log.d("QA_App", "お気に入り登録スタート")
-                favoriteImageView.setImageResource(R.drawable.ic_star)
-
                 var mGenre = mQuestion.genre
 
                 val dataBaseReference = FirebaseDatabase.getInstance().reference
@@ -189,18 +187,15 @@ class QuestionDetailActivity : AppCompatActivity() {
                 Log.d("QA_App", "お気に入りから削除")
 
 
-//                val collection = database.collection("CollectionName")
-//                val document = collection.document(task.id)
-
                 var mGenre = mQuestion.genre
 
                 val dataBaseReference = FirebaseDatabase.getInstance().reference
-                val document = dataBaseReference.child(UsersPATH).child(mQuestion.uid).child(GanrePATH)
-                    .child(mGenre.toString()).child(mQuestion.questionUid)
+                val genreRef =
+                    dataBaseReference.child(UsersPATH).child(mQuestion.uid).child(GanrePATH)
+                        .child(mGenre.toString()).child(mQuestion.questionUid)
 
-                document.delete().await()
 
-
+                genreRef.setValue(null)
 
                 favoriteImageView.setImageResource(R.drawable.ic_star_border)
                 isFavorite = false
