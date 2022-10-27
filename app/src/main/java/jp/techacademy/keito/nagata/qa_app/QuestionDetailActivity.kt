@@ -18,6 +18,48 @@ class QuestionDetailActivity : AppCompatActivity() {
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
 
+    //    お気に入り判定用　初期値　お気に入りではない
+    private var isFavorite = false
+
+//    ＝＝＝＝＝　お気に入りに確認　＝＝＝＝＝
+
+    private val mFavEventListener = object : ChildEventListener {
+        override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+
+
+//            val map = dataSnapshot.value as Map<*, *>
+//            Log.d("QA_App", "onChildAdded map = " + map.toString())
+
+            Log.d("QA_App", "onChildAdded お気に入りにされている")
+
+            favoriteImageView.setImageResource(R.drawable.ic_star)
+//            favoriteImageView.setImageResource(R.drawable.ic_star_border)
+
+            isFavorite = true
+
+
+        }
+
+        override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
+
+        }
+
+        override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+
+        }
+
+        override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
+
+        }
+
+        override fun onCancelled(databaseError: DatabaseError) {
+
+        }
+    }
+
+
+//    ＝＝＝＝＝　お気に入りに確認　終了　＝＝＝＝＝
+
     private val mEventListener = object : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
             val map = dataSnapshot.value as Map<*, *>
@@ -25,11 +67,9 @@ class QuestionDetailActivity : AppCompatActivity() {
             val answerUid = dataSnapshot.key ?: ""
 
             for (answer in mQuestion.answers) {
-                Log.d("QA_App", "answer = "  + answer.toString())
                 // 同じAnswerUidのものが存在しているときは何もしない
                 if (answerUid == answer.answerUid) {
                     return
-                    Log.d("QA_App", "return" )
                 }
             }
 
@@ -62,6 +102,10 @@ class QuestionDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_detail)
+
+//        念のために星をボーダーに変更
+        favoriteImageView.setImageResource(R.drawable.ic_star_border)
+
         // 渡ってきたQuestionのオブジェクトを保持する
         val extras = intent.extras
 
@@ -106,26 +150,51 @@ class QuestionDetailActivity : AppCompatActivity() {
         var uid = FirebaseAuth.getInstance().currentUser!!.uid
 
         favoriteImageView.setOnClickListener {
+
+
             Log.d("QA_App", "QustionDetailActivity onCreate favoriteImageView クリックされた")
-            Log.d("QA_App", "QustionDetailActivity onCreate genre = " + mQuestion.genre.toString())
+//            Log.d("QA_App", "QustionDetailActivity onCreate genre = " + mQuestion.genre.toString())
+//
+//            Log.d("QA_App", "QustionDetailActivity onCreate uid = " + uid.toString())
 
-            Log.d("QA_App", "QustionDetailActivity onCreate uid = " + uid.toString())
+            if (isFavorite == false) {
+//                お気に入り登録
+                Log.d("QA_App", "お気に入り登録スタート")
+                favoriteImageView.setImageResource(R.drawable.ic_star)
 
-            var mGenre = mQuestion.genre
+                var mGenre = mQuestion.genre
 
-            val dataBaseReference = FirebaseDatabase.getInstance().reference
-            val genreRef = dataBaseReference.child(UsersPATH).child(mQuestion.uid).child(GanrePATH).child(mGenre.toString()).child(mQuestion.questionUid)
+                val dataBaseReference = FirebaseDatabase.getInstance().reference
+                val genreRef =
+                    dataBaseReference.child(UsersPATH).child(mQuestion.uid).child(GanrePATH)
+                        .child(mGenre.toString()).child(mQuestion.questionUid)
 
-            val data = HashMap<String, String>()
+                val data = HashMap<String, String>()
 
-            Log.d("QA_App",   "generef = "+ genreRef.toString())
-            Log.d("QA_App",   "data = "+ data.toString())
+                Log.d("QA_App", "generef = " + genreRef.toString())
+                Log.d("QA_App", "data = " + data.toString())
 
-            var ansPath = mQuestion.questionUid
+                var ansPath = mQuestion.questionUid
 
-            data["favorites"] =  ansPath
+                data["favorites"] = ansPath
 
-            genreRef.setValue(data)
+                genreRef.setValue(data)
+
+                isFavorite = true
+
+                favoriteImageView.setImageResource(R.drawable.ic_star)
+
+            }else{
+//                お気に入り登録解除
+                Log.d("QA_App", "お気に入りから削除")
+                favoriteImageView.setImageResource(R.drawable.ic_star_border)
+
+
+
+                isFavorite = false
+
+
+            }
 
 
         }
@@ -136,10 +205,26 @@ class QuestionDetailActivity : AppCompatActivity() {
         super.onResume()
 
         val user = FirebaseAuth.getInstance().currentUser
-       Log.d("QA_App", "QuestionDetailActivity onResume user = " + user.toString())
+        Log.d("QA_App", "QuestionDetailActivity onResume user = " + user.toString())
 
         val imageView = findViewById<ImageView>(R.id.favoriteImageView)
         Log.d("QA_App", "QuestionDetailActivity imageView = " + imageView.toString())
+
+
+//        ＝＝＝＝＝　お気に入り 検索　＝＝＝＝＝
+        Log.d("QA_App", "QuestionDetailActivity 検索スタート ")
+        var mGenre = mQuestion.genre
+
+
+        val dataBaseReference = FirebaseDatabase.getInstance().reference
+        val favoriteRef = dataBaseReference.child(UsersPATH).child(mQuestion.uid).child(GanrePATH)
+            .child(mGenre.toString()).child(mQuestion.questionUid)
+        favoriteRef.addChildEventListener(mFavEventListener)
+
+        Log.d("QA_App", "QuestionDetailActivity 検索終了 ")
+
+//        ＝＝＝＝＝ お気に入り 検索 終了 ＝＝＝＝＝
+
 
         if (user == null) {
 //            ログインされていない場合はお気に入りを非表示に
